@@ -62,12 +62,21 @@ archive() {
   mv -v "$1" "$ARCHIVE"
 }
 
-( cd home && for f in $( find . -type f )
-do
-  if ! diff -q $f ~/$f 2>/dev/null
-  then
-    archive ~/$f
-    ln -v $f ~/$f
-  fi
-done )
+(
+  cd home || exit
+
+  for d in $( find . -type d -mindepth 1 )
+  do
+    mkdir -pv ~/$d
+  done
+
+  for f in $( find . -type f )
+  do
+    if ! diff -q $f ~/$f 2>/dev/null
+    then
+      archive ~/$f
+      ln -v $f ~/$f
+    fi
+  done
+)
 
