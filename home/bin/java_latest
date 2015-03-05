@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# looks for java revisions like:  1.8.0_31
+# if we get multiple for some reason in the future, the sort | tail will
+# give the largest and handles increments in any part of the version correctly
+printVersions() {
+  awk '
+  {
+    if (match($0,/[0-9]+[.][0-9]+[.][0-9]+_[0-9]+/))
+      V[substr($0,RSTART,RLENGTH)] = 1;
+  } END {
+    for (v in V)
+      print v
+  }' |
+    sed -e 's/[._]/ /g' |
+    sort -n -k1 -k2 -k3 -k4 |
+    tail -1 |
+    sed -e 's/ /./' -e 's/ /./' -e 's/ /_/'
+}
+
+# sneaking a peek at the oracle config for jusched.exe which seems
+# to be widely installed and relying on this xml file for same purpose
+# is there a better way?
+# http://java.com/applet/JreCurrentVersion2.txt ?
+getLatestVersion() {
+  x=${1:-8}
+  curl -s "https://javadl-esd-secure.oracle.com/update/1.${x}.0/map-m-1.${x}.0.xml" |
+    grep https.*update.*1.${x} |
+    printVersions
+}
+
+getInstalledVersion() {
+  x=${1:-8}
+  /usr/libexec/java_home -v 1.${x} |
+    printVersions
+}
+
+check() {
+  x=${1:-8}
+  latest=$( getLatestVersion $x )
+  installed=$( getInstalledVersion $x ) 
+
+  if [ "$latest" != "$installed" ]
+  then
+    echo update to java $x available
+    echo installed: $installed
+    echo latest   : $latest
+  elif [ -n "$verbose" ]
+  then
+    echo java $installed is up to date
+  fi
+}
+
+verbose=$@
+check 7
+check 8

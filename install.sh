@@ -48,3 +48,26 @@ done
 
 # install home files
 
+archive() {
+  test -e "$1" || return
+
+  base="../archives"
+
+  if test -z "$ARCHIVE"
+  then
+    mkdir -p $base
+    ARCHIVE=$( mktemp -d "$base/$( date +%F ).X" )
+  fi
+
+  mv -v "$1" "$ARCHIVE"
+}
+
+( cd home && for f in $( find . -type f )
+do
+  if ! diff -q $f ~/$f 2>/dev/null
+  then
+    archive ~/$f
+    ln -v $f ~/$f
+  fi
+done )
+

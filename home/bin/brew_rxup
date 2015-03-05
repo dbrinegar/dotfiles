@@ -1,0 +1,14 @@
+#!/bin/sh
+run() {
+  brew cleanup &&
+  brew update &&
+  brew doctor &&
+  brew upgrade
+}
+
+tmp=/tmp/$( basename "$0" ).$$
+log=~/Library/Logs/Homebrew/brew_rxup.log
+
+run 2>&1 | tee "$tmp"
+mv "$tmp" "$log"
+echo "$log"

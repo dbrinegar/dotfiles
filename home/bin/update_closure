@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# guard against excessive checks against the remote server
+# once per day is plenty
+
+latest='http://dl.google.com/closure-compiler/compiler-latest.zip'
+cache=/tmp/$( basename $0 )
+
+# exit early if the flag file is less than a day old: -1d in find parlance
+seenAlready=$( find $cache -mtime -1d 2>/dev/null )
+test -n "$seenAlready" && exit 1
+
+# having gotten here, we'd like to check remote for Last-Modified
+# look at HEAD and compare to contents of our flag file
+remote=$( curl -sI $latest | grep '^Last-Modified: ' )
+
+test "$remote" = "$( cat $cache 2>/dev/null )" && exit 1
+
+# having gotten here, we'd like to fetch and install closure
+# with a thought to multiple of these updates running at the same time
+# we extract to a unique directory (mktemp -d) and at the end do
+# an atomic mv to install our versioned jar
+tmp=$( mktemp -d "${cache}-XXXXX" )
+test -n "$tmp" || exit 1
+zip="${tmp}/closure.zip"
+jar="${tmp}/compiler.jar"
+prefix="${HOME}/bin/closure-compiler-v"
+
+curl -s $latest > $zip
+( cd $tmp && unzip $zip compiler.jar && rm $zip )
+
+version=$( stat -f "%Sm" -t %Y%m%d $jar )
+test 0 -eq $? || exit 1
+mv $jar ${prefix}${version}.jar &&
+  echo "$remote" > $cache  # success: remember this for next check
+
+# clean up
+rmdir $tmp
+
+# remove older jars
+# this is "keep 3 most recent"
+test -n "$prefix" || exit 1
+( ls -t ${prefix}*.jar | head -3 ; ls ${prefix}*.jar ) |
+  sort | uniq -u | xargs rm -v
+
+exit 0

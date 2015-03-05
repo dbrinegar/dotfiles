@@ -1,0 +1,102 @@
+#!/bin/sh
+
+# Bash has $PROMPT_COMMAND which runs before drawing $PS1
+# and trap DEBUG will run just before commands are run
+# so we can style everything with those, using PROMPT_COMMAND
+# to dynamically set a PS1 string and DEBUG to style output
+
+preexec() {
+  # guard against running multiple times for example in a piped chain of
+  # commands, or during PROMPT_COMMAND commands which would come after the
+  # command is finished, or COMP_LINE commands, otherwise we would stuff
+  # these odd control characters into stdin and block pipes and so forth.
+  #
+  # PROMPT_COMMAND must finish with __preexec_run_once=1 to enable
+  if [ 1 -eq ${__preexec_run_once:-0} -a -z "$COMP_LINE" ]
+  then
+    # run this once before interactive commands are executed
+    __preexec_run_once=0
+    # tput here seems to be highly dangerous to pipes and subshells
+    # eg this command will hang:% (jot -b '' 65537) | wc -l
+    #tput sgr0
+    # while the ansi codes are fine
+    printf '\033[0m'
+  fi
+
+  return 0  # otherwise debug mode kicks in and changes run behavior
+}
+# guard against stacking DEBUG handlers
+if [ -z "$( trap -p DEBUG 2>/dev/null >/dev/null )" ]
+then
+  trap 'preexec' DEBUG
+fi
+
+#
+# PS1 w/blue location line, window-width path, git status, bold command
+#
+
+# terminal colors (sgr0 is reset):
+# for c in `seq 0 255` sgr0 ; do tput setaf $c ; echo this is a line of color number $c ; done
+# variable key, short names because want to scan PS1 on one line
+# {w} is "whoami" + "hostname" part
+# {p} is path
+# {d} is dollar sign
+# {Cp} is color for {p}
+# {Hw} is highlight for {w}
+# {R} is reset
+
+set_PS1() {
+  local commandExitCode=$?
+
+  # {Hw} is bold unless {w} matches this string:
+  local normal_workstation="david@MacMini-2012:"
+  local purple="\[$( tput setaf 54 )\]"
+  local   blue="\[$( tput setaf 32 )\]"
+  local    red="\[$( tput setaf  9 )\]"
+
+  local R="\[$( tput sgr0 )\]"
+  local B="\[$( tput bold )\]"
+  local Cp=$purple
+  local Cw=$blue
+  local Hd=
+  local Hw=
+
+  local  w="$( whoami )@$( hostname -s ):"
+  local wL="$(( $( tput cols ) - ${#w} ))"  # remaining window width
+  local  p="$( pwd_short ${wL} )"
+
+  [ -n "${w/$normal_workstation/}" ] && Hw="$B"
+  [ 0 -ne "$commandExitCode" ] && Hd="$red"
+
+  # git status
+  local git= git_code= Hg=
+  # when we want the exit code, cannot have the local prefix on same line
+  git=$( git_prompt )
+  git_code=$?
+
+  if [ -n "$git" ]
+  then
+    if [ 1 -eq $git_code ]
+    then
+      Hg="$red"
+    elif [ 2 -eq $git_code ]
+    then
+      Hg="$B$purple"
+    else
+      Hg="$purple"
+    fi
+
+    git="$Hg($git)$R"
+  fi
+
+  PS1="$R$Hw$Cw$w$R$Cp$p$R\n$git$Hd\$$R $B"
+
+  # record command in .bash_history without waiting for end of session
+  history -a
+  # call Apple provided function to set terminal title
+  update_terminal_cwd
+  # finally, allow next preexec to run
+  __preexec_run_once=1
+}
+
+PROMPT_COMMAND='set_PS1;'

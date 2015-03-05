@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# VOODOO HERE: embed awk script into a bash heredoc string
+# this allows us to have comment prefix lines because it preserves newlines
+# and write straight non-bash code without escaping special chars etc
+# put EOF in quotes to prevent bash substitution in the string
+# expand result within quotes to preserve newlines
+elide_middle=$(cat<<"EOF"
+{
+  sub(ENVIRON["HOME"], "~");
+  N=split($0,D,"/");
+  for (skip = 1 ; length > 60 && skip < N-2 ; skip++) {
+    # rebuild $0, eliding from the middle, bias up
+    $0 = "";
+    for (n = 1 ; n <= 0.5 + N/2 - skip/2 ; n++) {
+      $0 = $0 D[n] "/";
+    }
+    $0 = $0 "...";
+    for (n = int(1.5 + N/2 + skip/2) ; n <= N ; n++) {
+      $0 = $0 "/" D[n];
+    }
+  }
+  print;
+}
+EOF
+)
+
+
+# intuition here is that longer paths are more descriptive and shorter
+# paths catch the boilerplate
+
+elide_short=$(cat<<"EOF"
+{
+  sub(ENVIRON["HOME"], "~");
+  N=split($0,D,"/");
+  a=int(0.5 + N/2);
+  b=a + 1;
+  # shrink to target length or ".../lastdir"
+  while (length > LEN && a >= 1) {
+    # move a down or b up, eliding whichever is shorter
+    # if b reaches the end, shrink a preserving the lastdir
+    if (length(D[a]) >= length(D[b]) && b < N) {
+      b++;
+    } else {
+      a--;
+    }
+    # rebuild $0, eliding between a and b
+    $0 = "";
+    for (n = 1 ; n <= a ; n++) {
+      $0 = $0 D[n] "/";
+    }
+    $0 = $0 "...";
+    for (n = b ; n <= N ; n++) {
+      $0 = $0 "/" D[n];
+    }
+    if (DEBUG) {
+      print a, b, length, $0;
+    }
+  }
+  print;
+}
+EOF
+)
+
+# to enable debug, set a length then -v DEBUG=1
+# eg: pwd_short 40 -v DEBUG=1
+LEN=${1:-60}
+shift
+pwd | awk -v LEN=${LEN} "${@}" "$elide_short"

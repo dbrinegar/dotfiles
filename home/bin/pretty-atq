@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# default is to interpret an optional parameter as the number of jobs to show:
+
+limit="head -${1:-99}"
+filter="cat"
+
+# if the parameter is non-numeric, treat it as a grep pattern
+
+begreppy() {
+limit="cat"
+filter="grep $@"
+}
+
+echo $@ | grep -q '[^0-9]' && begreppy $@
+
+
+bsd_style() {
+# sed reorganizes date and time to: year month day time, for easy sort
+# awk prints the end of at -c interleaved with atq output
+   atq |
+   sed -n 's,\([^ ]*\) \(..\)/\(..\)/\(..\),20\4/\2/\3 \1,p' |
+   sort |
+   $limit |
+   awk '{
+       job=$5
+       print $0
+       if (job) system( "at-printjob " job )
+      }' |
+   $filter
+}
+
+mac_style() {
+#   job   date
+	atq |
+	sort -k 6 -k 3M -k 4n -k 5 -k 1n |
+	$limit |
+	awk '{
+		job=$1
+		printf("%s   ", $0)
+		if (job) system( "at-printjob " job )
+	}' |
+	$filter
+}
+
+mac_style

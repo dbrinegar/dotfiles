@@ -1,0 +1,6 @@
+#!/bin/sh
+# keep at environment simple
+umask 0027
+V="USER=$USER HOME=$HOME PATH=$PATH"
+if [ -n "$TZ" ] ; then V="$V TZ=$TZ" ; fi
+env -i $V at $*

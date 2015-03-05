@@ -1,0 +1,2 @@
+#!/bin/sh
+at -c $1 | sed -e '1,/^}/ d' -e '/^unset / d' -e '/^[ ]*$/ d'
