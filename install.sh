@@ -55,7 +55,7 @@ archive() {
 
   if test -z "$ARCHIVE"
   then
-    mkdir -p $base
+    mkdir -pv $base
     ARCHIVE=$( mktemp -d "$base/$( date +%F ).X" )
   fi
 
@@ -80,3 +80,26 @@ archive() {
   done
 )
 
+# vim bundles
+
+bundle() {
+  author="$1"
+  package="$2"
+  base=~/.vim/bundle
+
+  mkdir -pv $base
+
+  test -d $base/$package && return
+  (
+    cd $base
+    git clone https://github.com/$author/$package
+  )
+}
+
+bundle scrooloose  syntastic
+bundle majutsushi  tagbar
+bundle tpope       vim-dispatch
+bundle dgryski     vim-godef
+bundle juanpabloaj vim-istanbul
+bundle tpope       vim-markdown
+bundle tpope       vim-sensible
