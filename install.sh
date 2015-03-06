@@ -101,5 +101,6 @@ bundle majutsushi  tagbar
 bundle tpope       vim-dispatch
 bundle fatih       vim-go
 bundle juanpabloaj vim-istanbul
+bundle elzr        vim-json
 bundle tpope       vim-markdown
 bundle tpope       vim-sensible
