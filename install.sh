@@ -99,7 +99,7 @@ bundle() {
 bundle scrooloose  syntastic
 bundle majutsushi  tagbar
 bundle tpope       vim-dispatch
-bundle dgryski     vim-godef
+bundle fatih       vim-go
 bundle juanpabloaj vim-istanbul
 bundle tpope       vim-markdown
 bundle tpope       vim-sensible
