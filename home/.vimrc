@@ -8,7 +8,7 @@ execute pathogen#infect()
 let g:syntastic_javascript_checkers = ['gjslint', 'jshint', 'jscs']
 let g:syntastic_aggregate_errors = 1
 let g:vim_markdown_folding_disabled = 1
-let g:vim_json_syntax_conceal = 0
+"let g:vim_json_syntax_conceal = 0
 
 " syntastic recommended settings for newbies
 set statusline+=%#warningmsg#
@@ -39,11 +39,11 @@ function! MySettings ()
   set list
   set ignorecase
 
-  hi specialkey ctermfg=lightgrey
-  hi type ctermfg=1
-  hi statement ctermfg=1
-  hi DiffAdd ctermbg=3
-  hi Ignore ctermbg=1
+"  hi specialkey ctermfg=lightgrey
+"  hi type ctermfg=1
+"  hi statement ctermfg=1
+"  hi DiffAdd ctermbg=3
+"  hi Ignore ctermbg=1
 endfunction
 
 
