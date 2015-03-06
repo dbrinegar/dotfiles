@@ -103,4 +103,5 @@ bundle fatih       vim-go
 bundle juanpabloaj vim-istanbul
 bundle elzr        vim-json
 bundle tpope       vim-markdown
+bundle derekwyatt  vim-scala
 bundle tpope       vim-sensible
