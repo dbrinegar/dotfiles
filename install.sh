@@ -34,6 +34,7 @@ bash-completion
 ctags
 dbrinegar/dbrinegar/gitutils
 dnsmasq
+git
 jq
 node
 nvm
