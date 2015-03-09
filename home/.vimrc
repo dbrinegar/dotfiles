@@ -41,7 +41,7 @@ function! MySettings ()
   " FreeBSD Security Team advisory
   set nomodeline
 
-  set list
+  set nolist
   set ignorecase
 
 "  hi specialkey ctermfg=lightgrey

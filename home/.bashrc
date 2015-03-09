@@ -40,6 +40,9 @@ bash_interactive_setup() {
   alias gc="git commit"
   alias gs="git status"
 
+  alias GET="curl -so -"
+  alias fetch="GET"
+
   #source ~/AWS/my/start.sh
 
   java_setjdk 1.8
