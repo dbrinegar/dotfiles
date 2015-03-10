@@ -39,6 +39,8 @@ bash_interactive_setup() {
 
   alias gc="git commit"
   alias gs="git status"
+  # log local branch changes:
+  alias gl="git log --no-merges master.."
 
   alias GET="curl -so -"
   alias fetch="GET"
