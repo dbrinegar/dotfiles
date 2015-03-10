@@ -72,6 +72,11 @@ ga() {
   git commit
 }
 
+gbranch() {
+  git checkout -b $1 &&
+  git push -u origin $1
+}
+
 # java management:
 java_setjdk() {
   echo "java_setjdk $1"
