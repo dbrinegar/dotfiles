@@ -2,7 +2,13 @@
 
 # sgrep, source grep
 
-# -size -1M to filter out huge files
-# -H make grep always print file even if only one is passed in that xargs batch
-# -I make grep ignore binary files
-find . -type f -size -1M -not -path '*/.git/*' -not -path '*/node_modules/*' -print0 | xargs -0 grep -HI "$@"
+git rev-parse --git-dir 2>/dev/null >/dev/null
+if [ 0 -eq $? ]
+then
+  git grep "$@"
+else
+  # -size -1M to filter out huge files
+  # -H make grep always print file name
+  # -I make grep ignore binary files
+  find . -type f -size -1M -not -path '*/.git/*' -not -path '*/node_modules/*' -print0 | xargs -0 grep -HI "$@"
+fi
