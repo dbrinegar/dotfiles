@@ -1,5 +1,19 @@
 #!/bin/sh
 # obfuscate the pattern so that the egrep command doesn't match us
 # example:  mutt -> [m]utt
-pattern=$(( echo "$@" | sed 's/\([a-zA-Z]\)/[\1]/' ))
-exec ps Saxww | egrep "$pattern|[P]ID" | grep -v "$0"
+pattern=$( echo "$@" | sed 's/\([a-zA-Z]\)/[\1]/' )
+
+cmd="ps Saxww"
+
+title=$( $cmd | head -1 )
+
+res=$( $cmd | egrep "$pattern" | grep -v $0 )
+
+if [ -z "$res" ]
+then
+  exit 1
+else
+  echo "$title"
+  echo "$res"
+  exit 0
+fi
