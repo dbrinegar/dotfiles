@@ -66,7 +66,3 @@ autocmd VimEnter * call MySettings()
 "let g:DirDiffExcludes = "CVS"
 "map <F15> :w<CR>:make<CR>:cw<CR>
 
-" scala
-au BufRead,BufNewFile *.scala set filetype=scala
-au! Syntax scala source ~/.vim/syntax/scala.vim
-
