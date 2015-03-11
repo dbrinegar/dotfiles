@@ -40,6 +40,8 @@ node
 nvm
 parallel
 shellcheck
+vim
+vimpager
 "
 
 for b in $brews
