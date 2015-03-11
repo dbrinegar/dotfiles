@@ -58,8 +58,6 @@ bash_interactive_setup() {
 
   # setup the prompt
   source ~/bin/set_ps1
-
-  test -e ~/.bashrc_local && source ~/.bashrc_local
 }
 
 ga() {
@@ -91,3 +89,5 @@ java_listjdks() {
 }
 
 bash_setup
+
+test -e ~/.bashrc_local && source ~/.bashrc_local
