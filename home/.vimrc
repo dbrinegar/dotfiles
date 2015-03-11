@@ -8,7 +8,7 @@ execute pathogen#infect()
 let g:syntastic_javascript_checkers = ['gjslint', 'jshint', 'jscs']
 let g:syntastic_aggregate_errors = 1
 let g:vim_markdown_folding_disabled = 1
-"let g:vim_json_syntax_conceal = 0
+let g:vim_json_syntax_conceal = 0
 
 " syntastic recommended settings for newbies
 set statusline+=%#warningmsg#
@@ -25,6 +25,9 @@ if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
+" cleaner web, placed here so plugins can override
+set sw=2 ts=2 sts=2 expandtab
+
 function! MySettings ()
   " stop all magic formatting
   set formatoptions-=cro
@@ -35,8 +38,6 @@ function! MySettings ()
   set noerrorbells visualbell t_vb=
   autocmd GUIEnter * set visualbell t_vb=
 
-  " cleaner web
-  set sw=2 ts=2 sts=2 expandtab
 
   " FreeBSD Security Team advisory
   set nomodeline
