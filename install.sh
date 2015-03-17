@@ -34,6 +34,7 @@ bash-completion
 ctags
 dbrinegar/dbrinegar/gitutils
 dnsmasq
+fswatch
 git
 jq
 node
