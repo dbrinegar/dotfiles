@@ -48,8 +48,8 @@ fi
 set_PS1() {
   local commandExitCode=$?
 
-  # {Hw} is bold unless {w} matches this string:
-  local normal_workstation="david@MacMini-2012:"
+  # {Hw} is bold unless {w} matches this regex exactly:
+  local normal_workstation="david@.*Mac.*:"
   local purple="\[$( tput setaf 54 )\]"
   local   blue="\[$( tput setaf 32 )\]"
   local    red="\[$( tput setaf  9 )\]"
@@ -65,7 +65,7 @@ set_PS1() {
   local wL="$(( $( tput cols ) - ${#w} ))"  # remaining window width
   local  p="$( pwd_short ${wL} )"
 
-  [ -n "${w/$normal_workstation/}" ] && Hw="$B"
+  [ -n "$( echo $w | sed -e s/$normal_workstation// )" ] && Hw="$B"
   [ 0 -ne "$commandExitCode" ] && Hd="$red"
 
   # git status
