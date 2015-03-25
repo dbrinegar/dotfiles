@@ -97,7 +97,17 @@ bundle() {
   (
     cd $base
     git clone https://github.com/$author/$package
+    if [ -n "$3" ]
+    then
+      $3
+    fi
   )
+}
+
+post_install_command_t() {
+  cd $package/ruby/command-t &&
+  ruby extconf.rb &&
+  make
 }
 
 bundle scrooloose  syntastic
@@ -109,3 +119,4 @@ bundle elzr        vim-json
 bundle tpope       vim-markdown
 bundle derekwyatt  vim-scala
 bundle tpope       vim-sensible
+bundle wincent     Command-T      post_install_command_t
