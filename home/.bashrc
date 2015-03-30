@@ -75,6 +75,10 @@ gbranch() {
   git push -u origin $1
 }
 
+vimwith() {
+  vim $( sgrep -l "$@" )
+}
+
 # java management:
 java_setjdk() {
   echo "java_setjdk $1"
