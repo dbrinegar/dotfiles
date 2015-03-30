@@ -82,7 +82,7 @@ gcd() {
 }
 
 vimwith() {
-  vim $( sgrep -l "$@" )
+  vim -c "/${!#}" $( sgrep -l "$@" )
 }
 
 # java management:
