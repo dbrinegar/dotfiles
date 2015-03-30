@@ -10,6 +10,11 @@ let g:syntastic_aggregate_errors = 1
 let g:vim_markdown_folding_disabled = 1
 let g:vim_json_syntax_conceal = 0
 
+let g:syntastic_scala_scalastyle_jar = '/usr/local/Cellar/scalastyle/0.6.0/libexec/scalastyle_2.10-0.6.0-batch.jar'
+let g:syntastic_scala_scalastyle_config_file = '/usr/local/etc/scalastyle_config.xml'
+let g:scala_sort_across_groups=1
+let g:scala_first_party_namespaces='\(common\|controllers\|views\|models\|domain\|util\)'
+
 " syntastic recommended settings for newbies
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
