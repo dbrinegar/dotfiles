@@ -75,6 +75,12 @@ gbranch() {
   git push -u origin $1
 }
 
+gcd() {
+  # cd to top level directory + optional folder
+  path=$( git rev-parse --show-cdup 2>/dev/null )
+  test $? -eq 0 -a -n "$path$1" && cd "$path$1"
+}
+
 vimwith() {
   vim $( sgrep -l "$@" )
 }
