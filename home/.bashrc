@@ -85,6 +85,10 @@ vimwith() {
   vim -c "/${!#}" $( sgrep -l "$@" )
 }
 
+rvimwith() {
+  rvim -c "/${!#}" $( sgrep -l "$@" )
+}
+
 # java management:
 java_setjdk() {
   echo "java_setjdk $1"
