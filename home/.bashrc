@@ -86,7 +86,7 @@ vimwith() {
 }
 
 rvimwith() {
-  rvim -c "/${!#}" $( sgrep -l "$@" )
+  vim -R $( sgrep -l "$@" )
 }
 
 # java management:
