@@ -5,9 +5,12 @@
 # mix these outputs to find matches with a specific command
 
 # reparse $1 so $( killcmd "procname parms" ) works
-for x in $1 ; do procname=$x ; break ; done
+#for x in $1 ; do procname=$x ; break ; done
+#
+#PID=$( killall -s $procname | awk '{print $3}' )
+#for p in $PID ; do
+#   ps $p | grep "${*}" && kill -TERM $p
+#done
 
-PID=$( killall -s $procname | awk '{print $3}' )
-for p in $PID ; do
-   ps $p | grep "${*}" && kill -TERM $p
-done
+findcmd "$*" | awk '$1 != "PID" {print $1}' | xargs kill 
+
