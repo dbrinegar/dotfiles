@@ -16,9 +16,7 @@ let g:scala_sort_across_groups=1
 let g:scala_first_party_namespaces='\(common\|controllers\|views\|models\|domain\|util\)'
 
 " syntastic recommended settings for newbies
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+set statusline=[%n]\ %<%.99f\ %h%w%m%r%{SyntasticStatuslineFlag()}%y%=%-16(\ %l,%c-%v\ %)%P
 
 let g:syntastic_always_populate_loc_list = 1
 "let g:syntastic_auto_loc_list = 1
