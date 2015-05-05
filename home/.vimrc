@@ -46,7 +46,7 @@ function! MySettings ()
   set nomodeline
 
   set nolist
-  set ignorecase
+  set ignorecase smartcase  " case insensitive unless caps in search
 
 "  hi specialkey ctermfg=lightgrey
 "  hi type ctermfg=1
