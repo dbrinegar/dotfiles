@@ -3,7 +3,7 @@ run() {
   brew cleanup &&
   brew update &&
   brew doctor &&
-  brew upgrade
+  brew upgrade --all
 }
 
 tmp=/tmp/$( basename "$0" ).$$
